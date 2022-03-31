@@ -22,7 +22,7 @@ ForEach ($TargetProcess in $ExplorerProcesses) {
 If ( $UserName -eq 'defaultuser0' ) {
     # Autopilot Device Phase IS running
 	Write-Output 'MEM: Autopilot device phase still running'
-	Exit 1
+	Exit 7001
 } Else {
     # Autopilot Device Phase NOT running
 	Write-Output 'MEM: Autopilot device phase finished'

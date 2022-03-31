@@ -1,1 +1,1 @@
-# public_MEM
+## Intune (MEM) related scripts

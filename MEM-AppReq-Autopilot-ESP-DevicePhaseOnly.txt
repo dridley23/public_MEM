@@ -1,0 +1,8 @@
+## Custom regkey to use in MEM Win32 App Requirements to only install during Device Phase of ESP (ie when DefaultUser0 is logged on)
+
+Key Path:								HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+Value Name:								DefaultUserName
+Registry Key Requirement:						String comparison
+Operator:								Equals
+Value:									DefaultUser0
+Associate with a 32bit app on 64bit clients:	No

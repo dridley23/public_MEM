@@ -16,7 +16,7 @@ $installs32 =  Get-ChildItem -Path 'HKLM:\SOFTWARE\Wow6432node\Microsoft\Windows
 $installs64 | ForEach-Object {$installsList.Add($_)}
 $installs32 | ForEach-Object {$installsList.Add($_)}
 
-$ret = $installsList | Where-Object { $_.DisplayName -match 'CrowdStrike Windows Sensor' -and $_.DisplayVersion -ge '6.30.14406.0' }
+$ret = $installsList | Where-Object { $_.DisplayName -match 'CrowdStrike Windows Sensor' -and [version]$_.DisplayVersion -ge [version]'6.30.14406.0' }
 If ( $ret ) { 
 	Write-Output "MEM: Installed"
 	Exit 0

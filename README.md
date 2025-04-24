@@ -1,1 +1,1 @@
-## Intune (MEM) related scripts
+## Intune related scripts and policy exports

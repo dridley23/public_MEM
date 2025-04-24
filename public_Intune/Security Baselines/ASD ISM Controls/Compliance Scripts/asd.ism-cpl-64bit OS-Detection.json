@@ -1,0 +1,26 @@
+{
+  "_comment": [
+      ".PURPOSE           JSON",
+      ".GUID              9dc23f0e-c5a6-450b-ad15-39e2b3c64a48",
+      ".SYNOPSIS          Marks device as compliant if it is 64bit as per CIS Microsoft Intune for Windows 11 Benchmark (LEVEL 2)",
+      ".DESCRIPTION       ISM-1408",
+      ".FILENAME          asd.ism-cpl-64bit OS-Detection.ps1",
+      ".VERSION HISTORY   v1.0 | 20250410 20:46:09    [D.Ridley]    Initial creation",
+  ],
+"Rules":[ 
+    { 
+       "SettingName":"is64Bit",
+       "Operator":"IsEquals",
+       "DataType":"Boolean",
+       "Operand":true,
+       "MoreInfoUrl":"https://docs.microsoft.com/en-us/mem/intune/protect/compliance-custom-json",
+       "RemediationStrings":[ 
+          { 
+             "Language":"en_US",
+             "Title":"Operating System does not meet requirements. Current value {ActualValue}.",
+             "Description":"Only 64bit OS is supported."
+          }
+       ]
+    }
+ ]
+}

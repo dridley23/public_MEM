@@ -58,7 +58,7 @@ Function Sys-Services-L2 {
 		'WinHttpAutoProxySvc'	# WinHTTP Web Proxy Auto-Discovery Service
 	) | ForEach { 
 			If ( Get-Service $_ -ErrorAction SilentlyContinue ) {
-				Get-Service $_ | Stop-Service -Force -Verbose
+				Get-Service $_ | Stop-Service -Force -Verbose -EA SilentlyContinue	 # If this step cannot run do not make it terminal, insetad it will require a reboot post-disable
 				Get-Service $_ | Set-Service -StartupType Disabled -Verbose 
 			}
 		}

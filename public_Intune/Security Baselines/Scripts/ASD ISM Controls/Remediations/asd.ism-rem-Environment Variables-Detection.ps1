@@ -12,19 +12,26 @@ $envName = '__PSLockdownPolicy'
 $envValue = '4'
 
 Try {
-    # check the environmental variables
-    $ret = [System.Environment]::GetEnvironmentVariable($envName, [System.EnvironmentVariableTarget]::Machine)
-    If (-not ($ret) ) {
-        Write-Host "nonComplaint: $envName not set"
-        Exit 7002
+    $currentLangMode = $ExecutionContext.SessionState.LanguageMode
+	If ( $currentLangMode -eq 'ConstrainedLanguage' ) { 
+		# Possibly set via AppLocker script rules which auto enables CLM
+		Write-Host "COMPLIANT: $(Get-Date -Format "yyyy/MM/dd HH:mm:ss")"
+		Exit 0
+	} Else {
+		# check the environmental variables
+		$ret = [System.Environment]::GetEnvironmentVariable($envName, [System.EnvironmentVariableTarget]::Machine)
+		If (-not ($ret) ) {
+			Write-Host "nonComplaint: $envName not set"
+			Exit 7002
+		}
+		If ( $ret -ne $envValue ) {
+			Write-Host "nonComplaint: $envName is set to $ret"
+			Exit 7003
+		}
+		
+		Write-Host "COMPLIANT: $(Get-Date -Format "yyyy/MM/dd HH:mm:ss")"
+		Exit 0
 	}
-	If ( $ret -ne $envValue ) {
-        Write-Host "nonComplaint: $envName is set to $ret"
-        Exit 7003
-    }
-
-	Write-Host "COMPLIANT: $(Get-Date -Format "yyyy/MM/dd HH:mm:ss")"
-    Exit 0
 } Catch {
     $errMsg = $_.Exception.Message
     Write-Host $errMsg

@@ -1,69 +1,60 @@
-<#
-.PURPOSE			Remediation
-.GUID				8a6ead39-d3c0-4fee-aea1-11c34c8700d3
-.SYNOPSIS			Configures Windows 11 Services as per CIS Microsoft Intune for Windows 11 Benchmark (LEVEL 2)
-.DESCRIPTION		L2/69.1
-					L2/69.2
-					L2/69.4
-					L2/69.5
-					L2/69.9
-					L2/69.12
-					L2/69.14
-					L2/69.15
-					L2/69.16
-					L2/69.17
-					L2/69.18
-					L2/69.19
-					L2/69.20
-					L2/69.21
-					L2/69.22
-					L2/69.23
-					L2/69.25
-					L2/69.27
-					L2/69.29
-					L2/69.34
-					L2/69.35
-					L2/69.38
-					L2/69.39
-					L2/69.40
-.FILENAME			cis.Services Controls-rem-4.0.0-L2-Remediation.ps1
-.VERSION HISTORY	v1.0 | 20250429 20:06:09	[D.Ridley]		Initial creation
-#>
+<##############################################################################
+   
+    CIS Microsoft Intune for Windows 11 Benchmark v4.0.0 Build Kit script
+    Section #81 - System Services
+    Level 2 (L2)
 
+    The purpose of this script is to configure a system using the recommendations 
+    provided in the Benchmark, section(s), and profile level listed above to a 
+    hardened state consistent with a CIS Benchmark. 
+    
+    The script can be tailored to the organization's needs such as by creating 
+    exceptions or adding additional event logging.
 
-Function Sys-Services-L2 {
-	## :: Section 5 - System Services
-	@(
-		'BTAGService'           # Bluetooth Audio Gateway Service
-		'bthserv'               # Bluetooth Support Service
-		'MapsBroker'            # Downloaded Maps Manager
-		'GameInputSvc'         	# GameInput Service
-		'lfsvc'               	# Geolocation Service
-		'lltdsvc'               # Link-Layer Topology Discovery Mapper
-		'MSiSCSI'               # Microsoft iSCSI Initiator Service
-		'Spooler'               # Print Spooler 
-		'wercplsupport'         # Problem Reports and Solutions Control Panel Support
-		'RasAuto'               # Remote Access Auto Connection Manager
-		'SessionEnv'            # Remote Desktop Configuration
-		'TermService'           # Remote Desktop LocalServices
-		'UmRdpService'          # Remote Desktop LocalServices UserMode Port Redirector
-		'RemoteRegistry'		# Remote Registry
-		'LanmanServer'          # Server
-		'SNMP'					# SNMP Service
-		'WerSvc'                # Windows Error Reporting Service
-		'Wecsvc'                # Windows Event Collector
-		'WpnService'            # Windows Push Notifications System Service
-		'PushToInstall'         # Windows PushToInstall Service
-		'WinRM'                 # Windows Remote Management
-		'WinHttpAutoProxySvc'	# WinHTTP Web Proxy Auto-Discovery Service
-	) | ForEach { 
-			If ( Get-Service $_ -ErrorAction SilentlyContinue ) {
-				Get-Service $_ | Stop-Service -Force -Verbose -EA SilentlyContinue	 # If this step cannot run do not make it terminal, insetad it will require a reboot post-disable
-				Get-Service $_ | Set-Service -StartupType Disabled -Verbose 
-			}
-		}
+    This script can be deployed through various means, including Intune script 
+    manager, running it locally, or through any automation tool.
+
+    Version: 1.10
+    Updated: 24.Apr.2025 by jjarose
+
+##############################################################################>
+
+#Requires -RunAsAdministrator
+
+$L2Services = @{
+    'Bluetooth Audio Gateway Service'                           = 'HKLM:\SYSTEM\CurrentControlSet\Services\BTAGService'
+    'Bluetooth Support Service'                                 = 'HKLM:\SYSTEM\CurrentControlSet\Services\bthserv'
+    'Downloaded Maps Manager'                                   = 'HKLM:\SYSTEM\CurrentControlSet\Services\MapsBroker'
+    'GameInput Service'                                         = 'HKLM:\SYSTEM\CurrentControlSet\Services\GameInputSvc'
+    'Geolocation Service'                                       = 'HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc'
+    'Link-Layer Topology Discovery Mapper'                      = 'HKLM:\SYSTEM\CurrentControlSet\Services\lltdsvc'
+    'Microsoft iSCSI Initiator Service'                         = 'HKLM:\SYSTEM\CurrentControlSet\Services\MSiSCSI'
+    'Print Spooler'                                             = 'HKLM:\SYSTEM\CurrentControlSet\Services\Spooler'
+    'Problem Reports and Solutions Control Panel Support'       = 'HKLM:\SYSTEM\CurrentControlSet\Services\wercplsupport'
+    'Remote Access Auto Connection Manager'                     = 'HKLM:\SYSTEM\CurrentControlSet\Services\RasAuto'
+    'Remote Desktop Configuration'                              = 'HKLM:\SYSTEM\CurrentControlSet\Services\SessionEnv'
+    'Remote Desktop LocalServices'                              = 'HKLM:\SYSTEM\CurrentControlSet\Services\TermService'
+    'Remote Desktop LocalServices UserMode Port Redirector'     = 'HKLM:\SYSTEM\CurrentControlSet\Services\UmRdpService'
+    'Remote Registry'                                           = 'HKLM:\SYSTEM\CurrentControlSet\Services\RemoteRegistry'
+    'Server'                                                    = 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer'
+    'SNMP Service'                                              = 'HKLM:\SYSTEM\CurrentControlSet\Services\SNMP'
+    'Windows Error Reporting Service'                           = 'HKLM:\SYSTEM\CurrentControlSet\Services\WerSvc'
+    'Windows Event Collector'                                   = 'HKLM:\SYSTEM\CurrentControlSet\Services\Wecsvc'
+    'Windows Push Notifications System Service'                 = 'HKLM:\SYSTEM\CurrentControlSet\Services\WpnService'
+    'Windows PushToInstall Service'                             = 'HKLM:\SYSTEM\CurrentControlSet\Services\PushToInstall'
+    'Windows Remote Management'                                 = 'HKLM:\SYSTEM\CurrentControlSet\Services\WinRM'
+    'WinHTTP Web Proxy Auto-Discovery Service'                  = 'HKLM:\SYSTEM\CurrentControlSet\Services\WinHttpAutoProxySvc'
 }
 
 
-## :: Disable Services on device
-Sys-Services-L2
+ForEach ($service in $L2Services.GetEnumerator()) {
+    $ServiceName = $service.Key
+    $ServicePath = $service.Value
+
+    If (Test-Path -LiteralPath $ServicePath) { 
+        $StartValue = (Get-ItemProperty -LiteralPath $ServicePath).Start
+        If ($StartValue -and $StartValue -ne 4) {
+            Set-ItemProperty -LiteralPath $ServicePath -Name 'Start' -Value 4
+        }
+	}
+}

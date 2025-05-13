@@ -50,7 +50,7 @@ $scriptContent = @'
 <#
 .PURPOSE             Inteded to be called via schtask which is created via 'intune-Set-SchTask-ISM0853.ps1' (Intune psh platform script)
 .GUID                41220776-59d5-413e-81b0-6eedd83d2aed
-.SYNOPSIS            Restarts the device if it has been idle after 4hrs; between 8PM-6AM
+.SYNOPSIS            Restarts the device if user sessions have been idle >4hrs; between 8PM-6AM
 .DESCRIPTION         This script will:
                          - Create log file for all actions: "$env:windir\Logs\Intune\intune-Invoke-Idle Restart-ISM0853.log"
                          - If user(s) are logged on it will check idle time via C#(P/Invoke) code

@@ -13,7 +13,7 @@
 		- idle settings must be configured via power settings or Group Policy
 	IMPORTANT: There is potential for user data loss as the device is forcibly restarted, and unsaved work will be lost. Please consider this ISM control in line with business use.
 
-.FILENAME			intune-Invoke-Idle Restart-ISM0853.ps1
+.FILENAME			asd.ism-psh-ISM0853.ps1
 .VERSION HISTORY	v1.0 | 20250513 10:18:25	[D.Ridley]		Initial creation
 #>
 
@@ -48,7 +48,7 @@ Function CreateSchTask ($SchTaskName, $Command, $CommandArg, $Trigger, $RunAsSid
 $schTaskScriptFile = "$($env:ProgramData)\Intune\intune-Invoke-Idle Restart-ISM0853.ps1"
 $scriptContent = @'
 <#
-.PURPOSE             Inteded to be called via schtask which is created via 'intune-Set-SchTask-ISM0853.ps1' (Intune psh platform script)
+.PURPOSE             Inteded to be called via schtask which is created via 'asd.ISM-SysHardening-Idle Reboot SchTask-v1.0/asd.ism-psh-ISM0853.ps1' (Intune psh platform script)
 .GUID                41220776-59d5-413e-81b0-6eedd83d2aed
 .SYNOPSIS            Restarts the device if user sessions have been idle >4hrs; between 8PM-6AM
 .DESCRIPTION         This script will:

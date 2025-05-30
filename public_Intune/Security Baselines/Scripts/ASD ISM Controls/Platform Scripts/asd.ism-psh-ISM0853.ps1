@@ -44,11 +44,12 @@ Function CreateSchTask ($SchTaskName, $Command, $CommandArg, $Trigger, $RunAsSid
 }
 
 
+# Copy script to ProgramData #2
 #### Secondary script content ####
 $schTaskScriptFile = "$($env:ProgramData)\Intune\intune-Invoke-Idle Restart-ISM0853.ps1"
 $scriptContent = @'
 <#
-.PURPOSE             Inteded to be called via schtask which is created via 'asd.ISM-SysHardening-Idle Reboot SchTask-v1.0/asd.ism-psh-ISM0853.ps1' (Intune psh platform script)
+.PURPOSE             Intended to be called via schtask which is created via 'asd.ISM-SysHardening-Idle Reboot SchTask-v1.0/asd.ism-psh-ISM0853.ps1' (Intune psh platform script)
 .GUID                41220776-59d5-413e-81b0-6eedd83d2aed
 .SYNOPSIS            Restarts the device if user sessions have been idle >4hrs; between 8PM-6AM
 .DESCRIPTION         This script will:
@@ -136,13 +137,11 @@ If ($loggedOnUsers) {
     Write-Log "    No action taken."
 }
 '@
+
+If (-not ( Test-Path "$env:ProgramData\Intune") ) { MD "$env:ProgramData\Intune" -Force }
 Set-Content -Path $schTaskScriptFile -Value $scriptContent -Encoding UTF8
 #### END SECTION ####
 
-
-# Copy script to ProgramData
-# If (-not ( Test-Path "$env:ProgramData\Intune") ) { MD "$env:ProgramData\Intune" -Force }
-# Copy-Item "$PsScriptRoot\intune-Invoke-Idle Restart-ISM0853.ps1" "$env:ProgramData\Intune" -Force
 
 # Create schtask
 $SchTaskName = "intune-Invoke-Idle Restart-ISM0853"

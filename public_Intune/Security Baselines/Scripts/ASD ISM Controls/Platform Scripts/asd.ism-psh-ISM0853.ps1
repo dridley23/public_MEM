@@ -50,6 +50,7 @@ Function CreateSchTask ($SchTaskName, $Command, $CommandArg, $Trigger, $RunAsSid
 	$xmlPath = "$env:TEMP\$SchTaskName.xml"
 	schtasks /Query /TN ($SchTaskPath + $SchTaskName) /XML > $xmlPath
 
+	<#
 	## Load and modify the XML
 	[xml]$xml = Get-Content $xmlPath
 	$nsmgr = New-Object System.Xml.XmlNamespaceManager $xml.NameTable
@@ -64,6 +65,16 @@ Function CreateSchTask ($SchTaskName, $Command, $CommandArg, $Trigger, $RunAsSid
 
 	## Re-register task from modified XML
 	Register-ScheduledTask -TaskName ($SchTaskPath + $SchTaskName) -Xml (Get-Content $xmlPath | Out-String) -Force
+	#>
+	
+	## Catering for Psh CLM
+	(Get-Content $xmlPath) |
+	ForEach-Object {
+		$_ -replace '(<StartBoundary>.*?)(Z|[+-]\d{2}:\d{2})(</StartBoundary>)', '$1$3'
+	} | Set-Content $xmlPath
+
+	# Re-register task
+	schtasks /Create /TN ($SchTaskPath + $SchTaskName) /XML $xmlPath /F
 }
 
 

@@ -24,13 +24,13 @@ Try {
 			Write-Host "nonComplaint: $envName not set"
 			Exit 7002
 		}
-		If ( $ret -ne $envValue ) {
+		If ( $ret -eq $envValue ) {
+			Write-Host "COMPLIANT: $(Get-Date -Format "yyyy/MM/dd HH:mm:ss")"
+			Exit 0
+		} Else {
 			Write-Host "nonComplaint: $envName is set to $ret"
 			Exit 7003
 		}
-		
-		Write-Host "COMPLIANT: $(Get-Date -Format "yyyy/MM/dd HH:mm:ss")"
-		Exit 0
 	}
 } Catch {
     $errMsg = $_.Exception.Message

@@ -1,4 +1,4 @@
-<#
+<#""
 .PURPOSE			Detection
 .GUID				b76c73cd-7863-40b9-b782-1c8019248cae
 .SYNOPSIS			Removes Win11 Optional Features for ASD Blueprint for Secure Cloud
@@ -11,10 +11,12 @@
 $ErrorActionPreference = "Stop"
 
 
-# Define features to Remove; Comment out apps you do NOT wish to uninstall
+# Define features to Remove
+# Full list via: (Get-WindowsOptionalFeature -Online).featurename | sort
 $FeatureList = @(
 	"Internet-Explorer-Optional-amd64"
 	"NetFx3"
+	"SMB1Protocol"
 	"MicrosoftWindowsPowerShellV2Root"
 ) 
 

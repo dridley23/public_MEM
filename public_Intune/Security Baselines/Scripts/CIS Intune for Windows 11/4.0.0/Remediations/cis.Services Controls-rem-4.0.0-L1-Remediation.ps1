@@ -1,63 +1,70 @@
-<#
-.PURPOSE			Remediation
-.GUID				c420015c-da91-475c-9096-89f57804e949
-.SYNOPSIS			Configures Windows 11 Services as per CIS Microsoft Intune for Windows 11 Benchmark (LEVEL 1)
-.DESCRIPTION		L1/69.3
-					L1/69.6
-					L1/69.7
-					L1/69.8
-					L1/69.10
-					L1/69.11
-					L1/69.13
-					L1/69.24
-					L1/69.26
-					L1/69.28
-					L1/69.30
-					L1/69.31
-					L1/69.32
-					L1/69.33
-					L1/69.36
-					L1/69.37
-					L1/69.41
-					L1/69.42
-					L1/69.43
-					L1/69.44
-					L1/69.45
-.FILENAME			cis.Services Controls-rem-4.0.0-L1-Remediation.ps1
-.VERSION HISTORY	v1.0 | 20250429 20:04:51	[D.Ridley]		Initial creation
+<##############################################################################
+   
+    CIS Microsoft Intune for Windows 11 Benchmark v4.0.0 Build Kit script
+    Section #81 - System Services
+    Level 1 (L1)
+
+    The purpose of this script is to configure a system using the recommendations 
+    provided in the Benchmark, section(s), and profile level listed above to a 
+    hardened state consistent with a CIS Benchmark. 
+    
+    The script can be tailored to the organization's needs such as by creating 
+    exceptions or adding additional event logging.
+
+    This script can be deployed through various means, including Intune script 
+    manager, running it locally, or through any automation tool.
+
+    Version: 1.10
+    Updated: 24.Apr.2025 by jjarose
+	
+.VERSION HISTORY	v1.1 | 20251201 19:01:58	[D.Ridley]		Added Enable section to toggle services on
+
+##############################################################################>
+
+#Requires -RunAsAdministrator
+<# Start values
+	2 = Automatic
+	3 = Manual
+	4 = Disable
 #>
 
 
-Function Sys-Services-L1 {
-	@(
-		'Browser'				# 69.3  - Computer Browser
-		'IISADMIN'				# 69.6  - IIS Admin Service
-		'irmon'					# 69.7  - Infrared monitor service
-		'LxssManager'			# 69.1  - LxssManager
-		'FTPSVC'				# 69.11 - Microsoft FTP Service
-		'sshd'					# 69.13 - OpenSSH SSH Server
-		'RpcLocator'			# 69.24 - Remote Procedure Call (RPC) Locator
-		'RemoteAccess'			# 69.26 - Routing and Remote Access
-		'simptcp'				# 69.28 - Simple TCP/IP Services
-		'sacsvr'				# 69.3  - Special Administration Console Helper
-		'SSDPSRV'				# 69.31 - SSDP Discovery
-		'upnphost'				# 69.32 - UPnP Device Host
-		'WMSvc'					# 69.33 - Web Management Service
-		'WMPNetworkSvc'			# 69.36 - Windows Media Player Network Sharing Service
-		'icssvc'				# 69.37 - Windows Mobile Hotspot Service
-		'W3SVC'					# 69.41 - World Wide Web Publishing Service
-		'XboxGipSvc'			# 69.42 - Xbox Accessory Management Service
-		'XblAuthManager'		# 69.43 - Xbox Live Auth Manager
-		'XblGameSave'			# 69.44 - Xbox Live Game Save
-		'XboxNetApiSvc'			# 69.45 - Xbox Live Networking Service
-	) | ForEach { 
-			If ( Get-Service $_ -ErrorAction SilentlyContinue ) {
-				Get-Service $_ | Stop-Service -Force -Verbose
-				Get-Service $_ | Set-Service -StartupType Disabled -Verbose 
-			}
-		}
+$L1Services = @{
+    ## Disabled Services
+	'IIS Admin Service'                           	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\IISADMIN'        ; Start=4 }
+    'Infrared monitor service'                    	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\irmon'           ; Start=4 }
+    'LxssManager'                                 	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\LxssManager'     ; Start=4 }
+    'Microsoft FTP Service'                       	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\FTPSVC'          ; Start=4 }
+    'OpenSSH SSH Server'                          	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\sshd'            ; Start=4 }
+    'Remote Procedure Call (RPC) Locator'         	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\RpcLocator'      ; Start=4 }
+    'Routing and Remote Access'                   	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\RemoteAccess'    ; Start=4 }
+    'Simple TCP/IP LocalServices'                 	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\simptcp'         ; Start=4 }
+    'Special Administration Console Helper'       	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\sacsvr'          ; Start=4 }
+    'SSDP Discovery'                              	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\SSDPSRV'         ; Start=4 }
+    'UPnP Device Host'                            	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\upnphost'        ; Start=4 }
+    'Web Management Service'                      	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\WMSvc'           ; Start=4 }
+    'Windows Media Player Network Sharing Service'	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\WMPNetworkSvc'   ; Start=4 }
+    'Windows Mobile Hotspot Service'              	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\icssvc'          ; Start=4 }
+    'World Wide Web Publishing Service'           	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\W3SVC'           ; Start=4 }
+    'Xbox Accessory Management Service'           	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\XboxGipSvc'      ; Start=4 }
+    'Xbox Live Auth Manager'                      	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\XblAuthManager'  ; Start=4 }
+    'Xbox Live Game Save'                         	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\XblGameSave'     ; Start=4 }
+    'Xbox Live Networking Service'                	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\XboxNetApiSvc'   ; Start=4 }
+	
+	## Enabled Services (Automatic or Manual)
+    'Computer Browser'                            	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\Browser'			; Start=3 }
 }
 
 
-## :: Disable Services on device
-Sys-Services-L1
+ForEach ($service in $L1Services.GetEnumerator()) {
+    $ServiceName = $service.Key
+    $ServicePath = $service.Value.Path
+	$ServiceStart = $service.Value.Start
+	
+    If (Test-Path -LiteralPath $ServicePath) { 
+        $StartValue = (Get-ItemProperty -LiteralPath $ServicePath).Start
+        If ($StartValue -and $StartValue -ne $ServiceStart) {
+            Set-ItemProperty -LiteralPath $ServicePath -Name 'Start' -Value $ServiceStart
+        }
+	}
+}

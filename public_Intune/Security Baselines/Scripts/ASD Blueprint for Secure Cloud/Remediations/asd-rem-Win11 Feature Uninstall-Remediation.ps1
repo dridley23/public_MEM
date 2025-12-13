@@ -15,10 +15,12 @@ $LogPath = "$($env:windir)\Logs\Intune"; IF (-not (Test-Path $LogPath -EA Silent
 $LogFileName = "asd-rem-Win11 Feature Uninstall-Remediation.log"
 $LogFile = "$($LogPath)\$($LogFileName)"
 
-# Define features to Remove; Comment out apps you do NOT wish to uninstall
+# Define features to Remove
+# Full list via: (Get-WindowsOptionalFeature -Online).featurename | sort
 $FeatureList = @(
 	"Internet-Explorer-Optional-amd64"
 	"NetFx3"
+	"SMB1Protocol"
 	"MicrosoftWindowsPowerShellV2Root"
 ) 
 

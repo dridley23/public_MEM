@@ -14,11 +14,9 @@ $ErrorActionPreference = "Stop"
 # Define features to Remove
 # Full list via: (Get-WindowsOptionalFeature -Online).featurename | sort
 $FeatureList = @(
-	"Internet-Explorer-Optional-amd64"
 	"NetFx3"
 	"SMB1Protocol"
-	"MicrosoftWindowsPowerShellV2Root"
-) 
+)
 
 
 $objFeature = Get-WindowsOptionalFeature -Online | where { $_.State -match "Enable" }		 # Enabled/EnablePending

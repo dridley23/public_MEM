@@ -40,10 +40,6 @@ $L2Services = @{
     'Microsoft iSCSI Initiator Service' 					= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\MSiSCSI'					; Start=4 }
     'Print Spooler'                   						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\Spooler'					; Start=4 }
     'Problem Reports and Solutions Control Panel Support' 	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\wercplsupport'			; Start=4 }
-    'Remote Access Auto Connection Manager' 				= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\RasAuto'					; Start=4 }
-    'Remote Desktop Configuration'    						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\SessionEnv'				; Start=4 }
-    'Remote Desktop Services'    							= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\TermService'				; Start=4 }
-    'Remote Desktop Services UserMode Port Redirector' 		= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\UmRdpService'			; Start=4 }
     'Remote Registry'                 						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\RemoteRegistry'			; Start=4 }
     'Server'                          						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer'			; Start=4 }
     'SNMP Service'                    						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\SNMP'					; Start=4 }
@@ -53,6 +49,10 @@ $L2Services = @{
     'Windows Remote Management'       						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\WinRM'					; Start=4 }
 	
 	## Enabled Services (Automatic or Manual)
+    'Remote Access Auto Connection Manager' 				= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\RasAuto'					; Start=3 }
+    'Remote Desktop Configuration'    						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\SessionEnv'				; Start=3 }
+    'Remote Desktop Services'    							= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\TermService'				; Start=3 }
+    'Remote Desktop Services UserMode Port Redirector' 		= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\UmRdpService'			; Start=3 }
 	'Windows Push Notifications System Service'             = @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\WpnService'				; Start=2 }
     'WinHTTP Web Proxy Auto-Discovery Service'              = @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\WinHttpAutoProxySvc'		; Start=3 }
 }

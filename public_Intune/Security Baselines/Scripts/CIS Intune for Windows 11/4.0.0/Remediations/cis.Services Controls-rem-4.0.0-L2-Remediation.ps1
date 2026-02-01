@@ -38,7 +38,6 @@ $L2Services = @{
     'Geolocation Service'             						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc'					; Start=4 }
     'Link-Layer Topology Discovery Mapper' 					= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\lltdsvc'					; Start=4 }
     'Microsoft iSCSI Initiator Service' 					= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\MSiSCSI'					; Start=4 }
-    'Print Spooler'                   						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\Spooler'					; Start=4 }
     'Problem Reports and Solutions Control Panel Support' 	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\wercplsupport'			; Start=4 }
     'Remote Access Auto Connection Manager' 				= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\RasAuto'					; Start=4 }
     'Remote Desktop Configuration'    						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\SessionEnv'				; Start=4 }
@@ -53,6 +52,7 @@ $L2Services = @{
     'Windows Remote Management'       						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\WinRM'					; Start=4 }
 	
 	## Enabled Services (Automatic or Manual)
+    'Print Spooler'                   						= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\Spooler'					; Start=2 }
 	'Windows Push Notifications System Service'             = @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\WpnService'				; Start=2 }
     'WinHTTP Web Proxy Auto-Discovery Service'              = @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\WinHttpAutoProxySvc'		; Start=3 }
 }

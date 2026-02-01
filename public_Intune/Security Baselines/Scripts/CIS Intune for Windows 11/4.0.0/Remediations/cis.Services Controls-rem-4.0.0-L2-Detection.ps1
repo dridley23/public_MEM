@@ -22,7 +22,6 @@ Function Sys-Services-L2-Disable {
 			'lfsvc'               		# Geolocation Service
 			'lltdsvc'               	# Link-Layer Topology Discovery Mapper
 			'MSiSCSI'               	# Microsoft iSCSI Initiator Service
-			'Spooler'               	# Print Spooler                                            ; required for PrintToPdf too
 			'wercplsupport'         	# Problem Reports and Solutions Control Panel Support
 			'RasAuto'               	# Remote Access Auto Connection Manager                    ; required for w365
 			'SessionEnv'            	# Remote Desktop Configuration                             ; required for w365 + dependency for Workstation svc (LanmanWorkstation)
@@ -53,11 +52,12 @@ Function Sys-Services-L2-Enable {
 	Try {
 		@(
 			# 'SessionEnv' 
+			'Spooler'               	# Print Spooler                                            ; required for PrintToPdf too
 			'WpnService'
 			'WinHttpAutoProxySvc'
 		) | ForEach { 
 			If ( Get-Service $_ -ErrorAction SilentlyContinue) {
-				If ( (Get-Service $_).StartType -ne 'Automatic' ) { Throw "Service: $_ not set to Automatic" } 
+				If ( (Get-Service $_).StartType -notin @('Automatic','Manual') ) { Throw "Service: $_ not set as intended" } 
 			}
 		}
 	} Catch {

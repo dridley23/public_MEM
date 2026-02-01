@@ -60,7 +60,7 @@ Function Sys-Services-L2-Enable {
 			'WinHttpAutoProxySvc'
 		) | ForEach { 
 			If ( Get-Service $_ -ErrorAction SilentlyContinue) {
-				If ( (Get-Service $_).StartType -ne 'Automatic' ) { Throw "Service: $_ not set to Automatic" } 
+				If ( (Get-Service $_).StartType -notin @('Automatic','Manual') ) { Throw "Service: $_ not set as intended" } 
 			}
 		}
 	} Catch {

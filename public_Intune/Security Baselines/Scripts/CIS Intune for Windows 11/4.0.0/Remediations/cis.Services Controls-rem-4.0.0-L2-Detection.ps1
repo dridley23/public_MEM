@@ -7,6 +7,7 @@
 .FILENAME			cis.Services Controls-rem-4.0.0-L2-Detection.ps1
 .VERSION HISTORY	v1.0 | 20250429 20:06:09	[D.Ridley]		Initial creation
 					v1.1 | 20251124 09:53:14	[D.Ridley]		Added Enable section to toggle services on
+					v1.2 | 20260211 08:45:57	[D.Ridley]		Split Auto with Manual
 #>
 
 
@@ -23,19 +24,17 @@ Function Sys-Services-L2-Disable {
 			'lltdsvc'               	# Link-Layer Topology Discovery Mapper
 			'MSiSCSI'               	# Microsoft iSCSI Initiator Service
 			'wercplsupport'         	# Problem Reports and Solutions Control Panel Support
-			'RasAuto'               	# Remote Access Auto Connection Manager                    ; required for w365
-			'SessionEnv'            	# Remote Desktop Configuration                             ; required for w365 + dependency for Workstation svc (LanmanWorkstation)
-			'TermService'           	# Remote Desktop LocalServices                             ; required for w365
-			'UmRdpService'          	# Remote Desktop LocalServices UserMode Port Redirector    ; required for w365
+			'RasAuto'               	# Remote Access Auto Connection Manager                     ; required for w365
+			'SessionEnv'            	# Remote Desktop Configuration                              ; required for w365 + dependency for Workstation svc (LanmanWorkstation)
+			'TermService'           	# Remote Desktop LocalServices                              ; required for w365
+			'UmRdpService'          	# Remote Desktop LocalServices UserMode Port Redirector     ; required for w365
 			'RemoteRegistry'			# Remote Registry
 			'LanmanServer'          	# Server
 			'SNMP'						# SNMP Service
 			'WerSvc'                	# Windows Error Reporting Service
 			'Wecsvc'                	# Windows Event Collector
-			# 'WpnService'            	# Windows Push Notifications System Service                 ; required for Intune push WNS
 			'PushToInstall'         	# Windows PushToInstall Service
 			'WinRM'                 	# Windows Remote Management
-			# 'WinHttpAutoProxySvc'		# WinHTTP Web Proxy Auto-Discovery Service 					; required as dependency for WLANAutoConfig service
 		) | ForEach { 
 			If ( Get-Service $_ -ErrorAction SilentlyContinue) {
 				If ( (Get-Service $_).StartType -ne 'Disabled' ) { Throw "Service: $_ not set to Disabled" } 
@@ -48,16 +47,30 @@ Function Sys-Services-L2-Disable {
 }
 
 
-Function Sys-Services-L2-Enable {
+Function Sys-Services-L2-Auto {
 	Try {
 		@(
-			# 'SessionEnv' 
-			'Spooler'               	# Print Spooler                                            ; required for PrintToPdf too
-			'WpnService'
-			'WinHttpAutoProxySvc'
+			'Spooler'               	# Print Spooler                                             ; required for PrintToPdf too
+			'WpnService'            	# Windows Push Notifications System Service                 ; required for Intune push WNS
 		) | ForEach { 
 			If ( Get-Service $_ -ErrorAction SilentlyContinue) {
-				If ( (Get-Service $_).StartType -notin @('Automatic','Manual') ) { Throw "Service: $_ not set as intended" } 
+				If ( (Get-Service $_).StartType -notin @('Automatic') ) { Throw "Service: $_ not set as intended" } 
+			}
+		}
+	} Catch {
+		Write-Error "ERROR! $($_.Exception.Message)"
+		Exit 1
+	}
+}
+
+
+Function Sys-Services-L2-Manual {
+	Try {
+		@(
+			'WinHttpAutoProxySvc'		# WinHTTP Web Proxy Auto-Discovery Service 					; required as dependency for WLANAutoConfig service
+		) | ForEach { 
+			If ( Get-Service $_ -ErrorAction SilentlyContinue) {
+				If ( (Get-Service $_).StartType -notin @('Manual') ) { Throw "Service: $_ not set as intended" } 
 			}
 		}
 	} Catch {
@@ -68,11 +81,12 @@ Function Sys-Services-L2-Enable {
 
 
 
-
 ## :: Disable Services on device
 Sys-Services-L2-Disable
 ## :: Enable Services on device
-Sys-Services-L2-Enable
+Sys-Services-L2-Auto
+## :: Enable Services on device
+Sys-Services-L2-Manual
 
 
 Write-Host "COMPLIANT: $(Get-Date -Format "yyyy/MM/dd HH:mm:ss")"

@@ -52,7 +52,7 @@ $L1Services = @{
     'Xbox Live Networking Service'                	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\XboxNetApiSvc'   ; Start=4 }
 	
 	## Enabled Services (Automatic or Manual)
-    'Computer Browser'                            	= @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\Browser'			; Start=3 }
+    'Computer Browser (bowser)'                     = @{ Path='HKLM:\SYSTEM\CurrentControlSet\Services\Bowser'			; Start=3 }
 }
 
 
